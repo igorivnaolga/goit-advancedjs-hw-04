@@ -10,6 +10,12 @@ const selectors = {
   jsGuard: document.querySelector('.js-guard'),
 };
 
+let gallery = new SimpleLightbox('.gallery a', {
+  captions: true,
+  captionsData: 'alt',
+  captionDelay: 250,
+});
+
 let page = 1;
 
 // const perPage = 40;
@@ -41,14 +47,14 @@ async function onSearchSubmit(event) {
 
     searchGallery(data);
 
-    const totalPages = Math.ceil(data.totalHits / 40);
+    // const totalPages = Math.ceil(data.totalHits / 40);
 
-    if (page >= totalPages) {
-      observer.unobserve(selectors.jsGuard);
-      iziToast.info({
-        message: "We're sorry, but you've reached the end of search results.",
-      });
-    }
+    // if (page >= totalPages) {
+    //   observer.unobserve(selectors.jsGuard);
+    //   iziToast.info({
+    //     message: "We're sorry, but you've reached the end of search results.",
+    //   });
+    // }
   } catch (error) {
     console.log(error);
   }
@@ -67,6 +73,7 @@ function searchGallery({ hits, totalHits }) {
   });
 
   renderMarkup(hits);
+  gallery.refresh();
   observer.observe(selectors.jsGuard);
 }
 async function onLoadMore(entries, observer) {
@@ -76,6 +83,7 @@ async function onLoadMore(entries, observer) {
         page += 1;
         const { hits, totalHits } = await searchImages(inputText, page);
         renderMarkup(hits);
+        gallery.refresh();
 
         const totalPages = Math.ceil(totalHits / 40);
         if (page >= totalPages) {
@@ -131,10 +139,4 @@ function renderMarkup(images) {
     .join('');
 
   selectors.gallery.insertAdjacentHTML('beforeend', markup);
-
-  let gallery = new SimpleLightbox('.gallery a', {
-    captions: true,
-    captionsData: 'alt',
-    captionDelay: 250,
-  });
 }
