@@ -33,6 +33,7 @@ selectors.searchForm.addEventListener('submit', onSearchSubmit);
 async function onSearchSubmit(event) {
   event.preventDefault();
   page = 1;
+  observer.unobserve(selectors.jsGuard);
   selectors.gallery.innerHTML = '';
   inputText = event.target.elements.searchQuery.value.trim();
   event.target.reset();
